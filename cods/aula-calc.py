@@ -2,7 +2,7 @@ import ox
 import operator as op
 
 lexer = ox.make_lexer([
-    ('NUMBER', r'\d+(\.\d*)?'),
+    ('NUMBER', r'\d+(j)?(\.\d*)?(e-?\d+)?(([+-])?(\d+)j)?'),
     ('OP_S', r'[-+]'),
     ('OP_M', r'[*/]'),
     ('OP_E', r'\^'),
@@ -42,9 +42,12 @@ def eval(ast):
     else:
         raise ValueError('operador invalido: %s' % head)
 
-expr = input('expr: ')
-tokens = lexer(expr)
-ast = parser(tokens)
-print('tokens:', tokens)
-print('AST:', ast)
-print('value:', eval(ast))
+#expr = input('expr: ')
+#tokens = lexer(expr)
+#ast = parser(tokens)
+#print('tokens:', tokens)
+#print('AST:', ast)
+#print('value:', eval(ast))
+
+if __name__ == '__main__':
+    ox.parser.main(lexer, parser, eval)
