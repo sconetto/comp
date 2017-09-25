@@ -1,0 +1,166 @@
+Resumo de Compiladores
+Capítulo 1:
+1.1 Compiladores
+  Posto de forma simples, um compilador é um programa que lê um programa escrito
+  numa linguagem - a linguagem fonte - e o traduz num programa equivalente numa
+  outra linguagem - a linguagem alvo. Como importante parte desse processo de
+  tradução, o compilador relata a seu usuário a presença de erros no programa
+  fonte. Os compiladores são algumas vezes classificados como de uma passagem,
+  de passagens múltiplas, de carregar e executar, depuradores ou otimizantes,
+  dependendo de como tenham sido construídos ou que função se suponha que devam
+  realizar. A despeito dessa aparente complexidade, as tarefas básicas que
+  qualquer compilador precisa realizar são essencialmente as mesmas.
+
+  - O Modelo de Compilação de Análise e Síntese:
+  Existem duas partes na compilação: a análise e a síntese. A parte da análise
+  divide o programa fonte nas partes constituintes e cria uma representação
+  intermediária do mesmo. A de síntese constrói o programa alvo desejado, a
+  partir da representação intermediária. Das duas, a síntese requer as técnicas
+  mais especializadas. Durante a análise, as operações implicadas pelo programa
+  fonte são determinadas e registradas numa estrutura hierárquica, chamada de
+  árvore. Frequentemente, é utilizado um tipo especial de árvor, chamado árvore
+  sintática, na qual cada nó representa uma operação e o filho de um nó
+  representa o argumento da operação.
+
+  Muitas ferramentas de software que manipulam programas fonte realizam algum
+  tipo de análise. Alguns exemplos de tais ferramentas incluem:
+    1. Editores de estruturas: Um editor de estruturas toma como entrada um
+    conjunto de comandos para construir um programa fonte.
+    2. Pretty printer: Um pretty printer analise um programa e o imprime numa
+    forma em que a sua estrutura se torna claramente visível.
+    3. Verificadores estáticos: Um verificador estático lê um programa,
+    analisa-o e tenta descobrir seus erros pontenciais, sem executá-lo. A parte
+    de análise é frequentemente similar àquela encontrada nos compiladores
+    otimizantes.
+    4. Interpretadores: Em lugar de produzir um programa alvo como resultado da
+    tradução, um interpretador realiza operações especificadas pelo programa
+    fonte. Os interpretadores são frequentemente usados para executar linguagens
+    de comandos, dado que cada operador numa tal linguagem é usualmente uma
+    invocação de uma rotina complexa, como um editor ou compilador.
+
+  A parte de análise, em cada um dos seguintes exemplos seguintes, é similar
+  aquela de um compilador convencional.
+    1. Formatadores de texto: Um formatador de texto toma por entrada um fluxo
+    de caracteres, a maior parte do mesmo como texto a ser composto
+    tipograficamente, mas com alguma parte incluindo comandos, a fim de indicar
+    parágrafos, figuras ou estruturas matemáticas, tais como subscritos e
+    sobrescritos.
+    2. Compiladores de silício: Um compilador de silício possui uma linguagem
+    fonte que é similar ou idêntica à de uma linguagem de programação
+    convencional. Entretanto as variáveis da mesma não representam localizações
+    de memória mas sinais lógicos (0 ou 1) ou grupos de sinais de um circuito
+    de chaveamento.
+    3. Interpretadores de queries: Um interpretador de queries traduz um
+    predicado, contendo operadores booleanos ou relacionais, em comandos, para
+    percorrer um banco de dados, de forma a satisfazer ao predicado.
+
+  - O Contexto de um compilador:
+  Adicionalmente ao compilador, vários outros programas podem ser necessários
+  para se criar um programa alvo executável. Um programa fonte pode ser divido
+  em módulos armazenados em arquivos separados. A tarefa de coletar esses
+  módulos é, algumas vezes, confiada a um programa distinto, chamado de
+  pré-processador. O pré-processador pode, também, expandir formas curtas,
+  chamadas de macros, em enunciados da linguagem fonte.
+
+1.2 Análise do Programa Fonte
+  Nesta seção, introduzimos a análise e ilustramos seu uso em algumas linguagens
+  de formatação de texto. Na compilação, a análise consiste em três fases:
+  1. Análise linear, na qual um fluxo de caracteres constituindo um programa é
+  lido da esquerda para a direita e agrupado em tokens, que são sequencias de
+  caracteres tendo um significado coletivo.
+  2. Análise hierárquica, na qual os caracteres ou tokens são agrupados
+  hierarquicamente em coleções aninhadas com significado coletivo.
+  3. Análise semântica, na qual certas verificações são realizadas a fim de se
+  assegurar que os componentes de um programa se combinam de forma
+  significativa.
+
+  - Análise Léxica
+  Num compilador, a análise linear é chamada e análise léxica ou
+  esquadrinhamento (scanning). Por exemplo, na análise léxica, os caracateres
+  no enunciado de atribuição
+  montante := deposito_inicial + taxa_de_juros * 60
+  poderiam ser agrupados nos seguintes tokens:
+  1. O identificador montante
+  2. O símbolo de atribuição :=
+  3. O identificador deposito_inicial
+  4. O sinal de adição
+  5. O identificador taxa_de_juros
+  6. O sinal de multiplicação
+  7. O número 60.
+  Os espaçoes que separam os caracteres desses tokens seriam normalmente
+  eliminados durante a análise léxica.
+
+  - Análise Sintática
+  A análise hierárquica é chamada de análise gramatical ou análise sintática.
+  Envolve o agrupamento dos tokens do programa fonte em frases gramaticais, que
+  são usadas pelo compilador, a fim de sintetirar a saída. Usualmente, as frases
+  gramaticais do programa fonte são representadas por uma árvore gramatical.
+  A estrutura hierárquica de um programa é usualmente expressa por regras
+  recursivas. A divisão entre a análise léxica e sintática é um tanto
+  arbitrária. Usualmente, escolhemos uma que simplifique a tarefa global de
+  análise. Um fator determinante na divisão é o de uma construção da linguagem
+  fonte ser inerentemente recursiva ou não.
+
+  - Análise Semântica
+  A fase de análise semântica verifica os erros semânticos no programa fonte e
+  captura as informações de tipo para a fase subsequente de geração de código.
+  Utiliza a estrutura hierárquica determinada pela fase de análise sintática,
+  a fim de identificar os operadores e operandos das expressões e enunciados.
+  Um importante componente da análise semântica é a verificação de tipos. Nela
+  o compilador checa se cada operador recebe os operandos que são permitidos
+  pela especificação da linguagem fonte.
+
+  - A Anáselise nos Formatadores de Texto
+  É útil considerar a entrada para um formatador de texto como especificando
+  uma hierarquia de compartimentos, que são reguiões retangulares a serem
+  preenchidas por algum padrão de bits, representando pontos claros e escuros a
+  serem impressos no dispositivo de saída.
+
+1.3 As Fases de Um Compilador
+  Conceitualmente, um compilador opera em fases, cada uma das quais transforma o
+  programa fonte de uma representação para outra. As três primeiras fases,
+  formando o núcleo da parte de análise do compilador, foram introduzidas na
+  última seção. Duas outras atividades, o gerenciamento da tabela de símbolos e
+  a manipulação de erros, são mostradas interagindo com as seis fases de analise
+  léxica, análise sintática, análise semântica, geração de código intermediário,
+  otimização e geração de código. Informalmente, também chamaremos de "fases" o
+  gerenciador da tabela de símbolos e o manipulador de erros.
+
+  - Gerenciamento da Tabela de Símbolos
+  Uma função essencial do compilador é registrar os identificadores usados no
+  programa fonte e coletar as informações sobre os seus diversos atributos.
+  Esses atributos podem providenciar informações sobre a memória reservada
+  para o identificador, seu tipo, escopo (onde é válido no programa) e, no caso
+  de nomes de procedimentos, coisas tais como o número e os tipos de seus
+  argumentos, o método de transmissão de cada um (por exemplo, por referência) e
+  o tipo retornado, se algum.
+  Uma tabela de símbolos é uma estrutura de dados contendo um registro para cada
+  identificador, com os campos contendo os atributos do identificador. A
+  estrutura de dados nos permite encontrar rapidamente cada registro e,
+  igualmente, armazenar ou recuperar dados do mesmo.
+
+  - Detecção de Erros e Geração de Relatórios
+  Cada fase pode encontrar erros. Entretanto, apóes encontrá-los, precisa lidar
+  de alguma forma com os mesmos, de tal forma que a compilação possa continuar,
+  permitindo que sejam detectados erros posteriores no programa fonte. Um
+  compilador que pare ao encontrar o primeiro erro não é tão prestativo quanto
+  poderia sê-lo. As fases de análise sintática e semântica tratam usualmente de
+  uma ampla fatia dos erros detectáveis pelo compilador. A fase de análise
+  léxica pode detectá-los quando os caracteres remanescentes na entrada não
+  formem qualquer token da linguagem. Os erros, onde o fluxo de tokens viole as
+  regras estruturais (sintaxe) da linguagem sãoo determinados pela fase de
+  análise sintática. Durante a análise semântica, o compilador tenta detectar as
+  construções que possuam a estrutura sintática correta, sem nenhuma preocupação
+  com o significado da operação envolvida.
+
+  - As Fases de Análise
+  À medida que a tradução progride, a representação interna do compilador para
+  programa fonte muda. A fase de análise léxica lê os caracteres de um programa
+  fonte e os agrupa num fluxo de tokens, no qual cada token representa uma
+  sequência de caracteres logicamente coesiva, como, por exemplo, um
+  identificador, uma palavra chave (if, while, etc), um caractere de pontuação
+  ou um operador composto por vários caracteres (:=). A sequência dos caracteres
+  que formam um token é chamado o lexema para aquele token.
+  Certos tokens serão enriquecidos por um "valor léxico". A análise sintática
+  impõe uma estrutura hierárquica ao fluxo de tokens, a qual iremos retratar
+  através de árvores sintáticas.
