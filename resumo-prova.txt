@@ -253,3 +253,291 @@ Capítulo 1:
   5. Dispositivos de fluxo de dados.
 
 Capítulo 2:
+2.1 Visão Geral
+  Uma linguagem de programação pode ser definida pela descrição da aparência de
+  seus programas (a sintaxe da linguagem) e do que os mesmos significam (a
+  semântica da linguagem). Para especificar a sintaxe de uma linguagem,
+  apresentamos uma notação amplamente aceita, chamada de gramática livre de
+  contexto ou BNF (para Forma de Backus-Naur). Com as notações correntemente
+  disponíveis, a semântica é muito mais difícil de se descrever do que a
+  sintaxe. Consequentemente, para especificar a semântica de uma linguagem
+  usaremos descrições informais e exemplos sugestivos. Além de especificar a
+  sintaxe da linguagem, uma gramática livre de contexto pode ser usada como
+  auxílio para guiar a tradução de programas. Uma técnica de compilação,
+  orientada por gramáticas, conhecida como tradução dirigida pela sintaxe, é de
+  muita ajuda na organização das partes da vanguarda do compilador.
+
+2.2 Definição da Sintaxe
+  Uma gramática descreve naturalmente a estrutura hierárquica de muitas
+  construções das linguagens de programação. Por exemplo, um comando if-else, em
+  C, possui a forma:
+  if (expressão) comando else comando
+  Ou seja, o comando é uma concatenação da palavra-chave if, um parênteses à
+  esquerda, uma expressão, um parênteses à direita, um comando, a palavra-chave
+  else e um outro comando. Tal regra é chamada de uma produção. Numa produção,
+  os elementos léxicos, como a palavra-chave if e os parênteses, são chamados de
+  tokens. As variávies como expressão e comando, representam sequências de
+  tokens e são chamadas de não-terminais.
+  Uma gramática livre de contexto possui quatro componentes:
+  1. Um conjunto de tokes, conhecidos como símbolos terminais.
+  2. Um conjunto de não-terminais.
+  3. Um conjunto de produções, onde uma produção consiste em um não-terminal,
+  chamado de lado esquerdo da produção, uma seta e uma sequência de tokens e/ou
+  não-terminais, chamados de lado direito da produção.
+  4. Uma designação a um dos não-terminais como o símbolo de partida.
+  Seguimos a convenção de especificar gramáticas pela listagem de suas
+  produções, com aquelas para o símbolo de partida figurando à frente das
+  demais. Assumimos que os dígitos, os sinais, tais como <=, e as cadeias de
+  caracteres em negrito, como while, sejam terminais. Um nome em itálico é um
+  não-terminal e qualquer nome ou símbolo que não esteja em itálico deve ser
+  assumido como um token.
+  Dizemos que uma produção é para um não-terminal se o último figurar no lado
+  esquerdo da primeira. Uma cadeia de tokens é uma sequência de zero ou mais
+  tokens. A cadeia contendo zero tokens, escrita E, é chamada de cadeia vazia.
+  Uma gramática deriva cadeias começando pelo símbolo de partida e, então,
+  substituindo repetidamente um não-terminal pelo lado direito de uma produção
+  para aquele não-terminal. As cadeias de tokens que podem ser derivadas a
+  partir do símbolo de partida formam a linguagem definida pela gramática.
+
+  - Árvores Gramaticais
+  Uma árvore gramatical mostra, pictoricamente, como o símbolo de partida de uma
+  gramática deriva uma cadeia de linguagem. Se um não terminal A possui uma
+  produção A -> XYZ, então uma árvore gramatical pode ter um nó interior
+  rotulado A, com três filhos rotulados X, Y e Z, da esquerda para direita.
+  Formalmente, dada uma gramática livre de contexto, uma árvore gramatical
+  possui as seguintes propriedades:
+  1. A raiz é rotulada pelo símbolo de partida.
+  2. Cada folha é rotulada por um token ou por E (cadeia vazia).
+  3. Cada nó interior é rotulado por um não-terminal.
+  4. Se A é um não-terminal rotulando algum nó interior e X1, X2, ..., Xn são
+  rótulos dos filhos daquele nó, da esquerda para a direita, então
+  A ->X1X2...Xn é uma produção. Aqui X1X2...Xn figuram no lugar de símbolos
+  que sejam terminais ou não-terminais. Como um caso especial, se A -> E, então
+  um nó rotulado A deve possuir um único filho rotulado E (cadeia vazia).
+
+  As folhas da árvore gramatical, lidas da esquerda para a direita, formam o
+  produto da árvore, que é a cadeia gerada ou derivada a partir do não-terminal
+  à raiz da árvore gramatical. Outra definição da linguagem gerada por uma
+  gramática é a do conjunto de cadeias que podem ser geradas por alguma árvore
+  gramatical. O processo de encontrar uma árvore gramatical para uma dada cadeia
+  de tokens é chamado de análise gramatical ou análise sintática daquela cadeia.
+
+  - Ambiguidade
+  Temos que ser cuidadosos ao falar sobre a estrutura de uma cadeia segundo uma
+  gramática. Conquanto seja claro que cada árvore gramatical dê origem
+  exatamente à cadeia formada por suas folhas, uma gramática pode ter mais de
+  uma árvore gramatical gerando uma dada cadeia de tokens. Tal gramática é dita
+  ambígua.
+
+  - Associatividade dos Operadores
+  Convecionalmente, 9+5+2 é equivalemte a (9+5)+2 e 9-5-2 a (9-5)-2. Quando um
+  operando, como 5, possui operadores à esquerda e à direita, são necessárias
+  converções para decidir que operador recebe que operando. Dizemos que o
+  operador + associa à esquerda poruqe um operando com sinais de adição em ambos
+  os lados é absorvido pelo operador à sua esquerda. Na maioria das linguagens
+  de programação, os quatro operadores aritméticos (adição, subtração,
+  multiplicação e divisão) são associativos à esquerda. Alguns operadores
+  comuns, tais como exponenciação, são associativos à direita. Como outro
+  exemplo, o operador de atribuição (=) em C é associativo à direita.
+
+  - Precedência de Operadores
+  Considere a expressão 9+5*2. Existem duas possíveis interpretações para a
+  mesma: (9+5)*2 ou 9+(5*2). A associatividade de + e de * não resolve essa
+  ambiguidade. Por esse motivo, precisamos conhecer a precedência relativa dos
+  operadores quando mais de um tipo deles estiver presente. Dizemos que o *
+  possui precedência mais alta do que +, se * capturar seus operandos antes de
+  + o fazer. Na aritmética ordinária, a multiplicação e a divisão têm maior
+  precedência que a adição e a subtração.
+  Sintaxe das expressões. Uma gramática para expressões aritméticas pode ser
+  construída a partir de uma tabela mostrando a associatividade e a precedência
+  dos operadores.
+
+2.4 A Análise Gramatical
+  A análise gramatical é o processo de se determinar se uma cadeia de tokens
+  pode ser gerada por uma gramática. Na discussão do problema, serve como apoio
+  ao raciocínio pensar que uma árvore gramatical está sendo construída, ainda
+  que um compilador não construa efetivamente. No entanto, um analisador
+  gramatical precisa ser capaz de construir uma árvore ou então a compilação não
+  poderá ser garantida correta. Uma alternativa viável é a de usar uma
+  ferramenta de software a fim de gerar um tradutor diretamente a partir de um
+  esquema de tradução.
+  Um analisador gramatical pode ser construído para qualquer gramática. As
+  gramáticas usadas na prática, entretanto, possuem uma forma especial. Para
+  qualquer gramática livre de contexto existe um analisador gramatical que toma
+  no maximo um tempo proporcional a O(n^3) para analisar gramaticalmente uma
+  cadeia de n tokens. Mas tempo ao cubo é muito caro. Dada uma linguagem de
+  programação, podemos geralmente construir uma gramática que possa ser
+  analisada de forma rápida. A maioria dos métodos de análise gramatical cai em
+  uma dentre duas classes, chamadas de top-down e bottom-up. Esses termos se
+  referem à ordem na qual os nós da árvore gramatical são construídos. No
+  primeiro, a construção se inicia na raiz e prossegue em direção às folhas,
+  enquanto que no último, a construção se inicia nas folhas e procede em direção
+  à raiz.
+
+  - Análise Gramatical Preditiva
+  A análise gramatical descendente recursiva é um método top-down de análise
+  sintática, no qual executamos um conjunto de procedimentos recursivos para
+  processar a entrada. Um procedimento é associado a cada não-terminal de uma
+  gramática. Aqui, consideramos uma forma especial de análise gramatical
+  descendente recursiva, chamada de análise gramatical preditiva, na qual o
+  símbolo lookahead determina inambiguamente o procedimento selecionado para
+  cada não-terminal. A sequência de procedimentos chamada no processamento da
+  entrada define implicitamente uma árvore gramatical para a entrada.
+
+  - Quando Usar Produções-E
+  As produções com E no lado direito requerem tratamento especial. O analisador
+  gramatical descendente recursivo usa uma produção-E como um default, quando
+  nenhum outra puder ser usada.
+
+2.6 Análise Léxica
+  Iremos agora adicionar ao tradutor da secção prévia um analisador léxico que
+  lê e converte a entrada para um fluxo de tokens a ser analisado pelo parser.
+  Uma sequência de caracteres de entrada que compõe um único token é chamada de
+  lexema. Um scanner (analisador léxico) pode isolar o parser da representação
+  sob a forma de lexema dos tokens. Começamos por listar algumas das funções que
+  gostaríamos que um analisador léxico realizasse.
+  Remoção de Espaçoes em Branco e Comentários: O tradutor de expressões examina
+  cada caractere da entrada, de tal forma que caracteres estranhos, como
+  brancos, irão fazer com que o mesmo falhe. Muitas linguagens permitem que
+  "espaços em branco" (brancos, tabulações e avanço de linha) apareçam entre os
+  tokens. Os comentários podem igualmente ser ignorados pelo parser e tradutor,
+  de tal forma que pode ser tratados também como espaços em branco.
+  Constantes: A qualquer tempo em que um dígito isolado apareça numa expressão,
+  parece razoável admitar uma constante inteira arbitrária no seu lugar. Como
+  uma constante inteira é uma sequência de dígitos, as constantes inteiras podem
+  ser admitidas pela adição à gramática de produções para expressões ou criando
+  um token para tais constantes.
+  Reconhecendo Identificadores e Palavras-Chave: As linguagens usam
+  identificadores para nomes de variáveis, de arrays, e para outros elementos.
+  Uma gramática para uma linguagem frequentemente trata um identificador como um
+  token. Um parser baseado numa tal gramática pretende ver o mesmo token,
+  digamos id, a cada vez que um identificador aparecer na entrada.
+
+  - Interface para o Analisador Léxico
+  Quando um analisador léxico é inserido entre o parser e o fluxo de entrada, o
+  mesmo interage com os dois, lê os caracteres de entrada, agrupa-os em lexemas
+  e passa os tokens formados pelos lexemas, juntamente com os valores dos seus
+  atributos, para os estágios posteriores do compilador. Em algumas situações o
+  analisador léxico tem que ler alguns caracteres à frente antes de estar apto a
+  decidir a respeito do token a ser retornado para o parser. O analisador léxico
+  e o parser formam um par produtor-consumidor. O analisador léxico produz os
+  tokens e o parser os consome. Os tokens produzidos podem ser guardados num
+  buffer até que venham a ser consumidos. A interação entre os dois é
+  restringida somente pelo tamanho do buffer, por que o analisador léxido não
+  poderá prosseguir quando o buffer estiver cheio e o parser quando o buffer
+  estiver vazio.
+
+Capítulo 3:
+  Este capítulo lida com as técnicas para especificar e implementar analisadores
+  léxicos. Uma forma simples de se construir um analisador léxico é escrever um
+  diagrama que ilustre a estrutura dos tokens da linguagem-fonte e então
+  traduzi-lo manualmente num programa que os localize. Analisadores léxicos
+  eficientes podem ser produzidos dessa forma.
+
+  3.1 O Papel do Analisador Léxico
+  O analisador léxico é a primeira fase de um compilador. Sua tarefa principal
+  é a de ler os caracteres de entrada e produzir uma sequência de tokens que o
+  parser utiliza para a análise sintática. Essa interação é comumente
+  implementada fazendo-se com que o analisador léxico seja uma sub-rotina ou
+  uma co-rotina do parser. Ao receber do parser um comando "obter o próximo
+  token", o analisador léxico lê os caracteres de entrada até que possa
+  identificar o próximo token. Como o analisador léxico é a parte do compilador
+  que lê o texto-fonte, também pode realizar algumas tarefas secundárias ao
+  nível da interface com o usuário. Uma dela é a de correlacionar as mensagens
+  de erro do compilador com o programa-fonte.
+
+  - Temas da Análisa Léxica
+  Existem várias razões para se dividir a fase de análise da compilação em
+  análise léxica e análise gramatical (parsing).
+  1. Um projeto mais simples talvez seja a consideração mais importante. A
+  separação das análises léxica e sintática frequentemente nos permite
+  simplificar uma ou outra dessas fases.
+  2. A eficiência do compilador é melhorada. Um analisador léxico separado nos
+  permite construir um processador especializado e potencialmente mais eficiente
+  para a tarefa.Uma grande quantidade de tempo é gasta lendo-se o programa-fonte
+  e particionando-o em tokens.
+  3. A portabilidade do compilador é realçada. As peculiaridades do alfabeto de
+  entrada e outra anomalias específicas de dispositivos podem ser restringidas
+  ao analisador léxico.
+
+  - Tokens, Padrões, Lexemas
+  Quando se fala sobre a análise léxica, usamos os termos "token", "padrão" e
+  "lexema" com significados específicos. Em geral, existe um conjunto de cadeias
+  de entrada para as quais o mesmo token é produzido como saída. Esse conjunto
+  de cadeias é descrito por uma regra chamada de um padrão associado ao token de
+  entrada. O padrão é dito reconhecer cada cadeia do conjunto. Um lexema é um
+  conjunto de caracteres no programa-fonte que é reconhecido pelo padrão de
+  algum token.
+  Tratamos os tokens como símbolos terminais na gramática para a
+  linguagem-fonte, usando nomes em negrito para representá-los Os lexemas
+  reconhecidos pelo padrão do token representam cadeias de caracteres no
+  programa-fonte, e podem receber um tratamento conjunto, como instâncias de uma
+  mesma unidade léxica (por exemplo, instâncias de identificadores, números
+  etc.). Na maioria das linguagens de programação, as seguintes construções são
+  tratadas como tokens: palavras-chave, operadores, identificadores, constantes,
+  literais, cadeias e símbolos de pontuação, como parênteses, vírgulas e
+  ponto-e-vírgulas.
+
+  - Atributos para os tokens
+  Quando um lexema for reconhecido por mais de um padrão, o analisador léxico
+  precisará providenciar informações adicionais para as fases subsequentes do
+  compilador a respeito do lexema particular que foi reconhecido. Por exemplo, o
+  padrão num reconhece as duas cadeias 0 e 1, mas é essencial para o gerador de
+  código ser informado sobre que cadeia foi efetivamente reconhecida.
+  O analisador léxico coleta informações a respeito dos tokens em seus atributos
+  associados. Os tokens influenciam decisões na análise gramatical; os atributos
+  influenciam a tradução dos tokens.
+
+  - Erros Léxicos
+  Poucos erros são distinguíveis somente no nível léxico, uma vez que um
+  analisador léxico possui uma visão muito local do programa-fonte. Suponhamos
+  que emerja uma situação na qual o analisador léxico seja incapaz de
+  prosseguir, por que nenhum dos padrões reconheça um prefixo na entrada
+  remanescente. Talvez a estratégia mais simples de recuperação seja a da
+  "modalidade pânico". Removemos sucessivos caracteres de entrada remanescente
+  até que o analisador léxico possa encontra um token bem-formado. Essa técnica
+  de recuperação pode ocasionalmente confundir o parser, mas num ambiente de
+  computação interativo pode ser razoavelmente adequada.
+  Outras possíves ações de recuperações de erros são:
+  1. remover um caractere estranho
+  2. inserir um caractere ausente
+  3. substituir um caractere incorreto por um correto
+  4. transpor dois caracteres adjacentes.
+  Transformaçẽos de erros como essas podem ser experimentadas numa tentativa de
+  se consertar a entrada. A mais simples de tais estratégias é a de verificar se
+  um prefixo da entrada remanescente pode ser transformado num lexema válido
+  atráves de uma única transformação.
+
+  3.3 Especificação dos tokens
+  As expressões regulares são uma notação importante para especificar padrões.
+  Cada padrão corresponde a um conjunto de cadeias e, dessa forma, as expressões
+  regulares servirão como nomes para conjuntos de cadeias.
+
+  - Cadeias e Linguagens
+  O termo alfabeto ou classe de caracteres denota qualquer conjunto finito de
+  símbolos. Exemplos típicos de símbolos são letras e caracteres. O conjunto
+  {0, 1} é o alfabeto binário; EBCID e ASCII são dois exemplos de alfabetos de
+  computadores. Uma cadeia sobre algum alfabeto é uma sequência finita de
+  símbolos retirados do mesmo. Na teoria das linguagens, os termos sentença e
+  palavra são frequentemente usados como sinônimos para o termo "cadeia". O
+  comprimento da cadei s, usualmente escrito |s|, é o núemro de ocorrências de
+  símbolos em s. A cadeia vazia, denotada E, é uma cadeia especial de
+  comprimento zero.
+  O termo linguagem denota qualquer conjunto de cadeia sobre algum alfabeto
+  fixo. A definição é muito ampla. Linguagens abstratas como o conjunto vazio,
+  ou {E}, o conjunto contendo somente a cadeia vazia, são linguagens sob essa
+  definição. Também o são o conjunto de todos os programas Pascal sintaticamente
+  bem formados, e o conjunto de todas as sentenças gramaticalmente corretas em
+  inglês, apesar dos dois últimos conjuntos serem muito difíceis de se
+  especificar.
+
+  - Operações em Linguagens
+  Existem várias operações importantes que podem ser aplicadas às linguagens.
+  Para a análise léxica, estaremos primeiramente interesados na união,
+  concatenação e fechamento. Podemos também generalizar o operador de
+  "exponenciação" para linguagens, definindo-se L^0 sendo {E} e L^i como
+  L^i-1*L. Desa forma L^i é L concatenado consigo mesma i-1 vezes.
+
+  - Expressões Regulares
+  Nesta seção, apresentamos uma notação, chamada de expressões regulares, que
+  nos permite definir precisamente conjuntos de diversas naturezas.
