@@ -508,7 +508,7 @@ Capítulo 3:
   um prefixo da entrada remanescente pode ser transformado num lexema válido
   atráves de uma única transformação.
 
-  3.3 Especificação dos tokens
+  3.3 Especificação dos Tokens
   As expressões regulares são uma notação importante para especificar padrões.
   Cada padrão corresponde a um conjunto de cadeias e, dessa forma, as expressões
   regulares servirão como nomes para conjuntos de cadeias.
@@ -520,7 +520,7 @@ Capítulo 3:
   computadores. Uma cadeia sobre algum alfabeto é uma sequência finita de
   símbolos retirados do mesmo. Na teoria das linguagens, os termos sentença e
   palavra são frequentemente usados como sinônimos para o termo "cadeia". O
-  comprimento da cadei s, usualmente escrito |s|, é o núemro de ocorrências de
+  comprimento da cadeia s, usualmente escrito |s|, é o núemro de ocorrências de
   símbolos em s. A cadeia vazia, denotada E, é uma cadeia especial de
   comprimento zero.
   O termo linguagem denota qualquer conjunto de cadeia sobre algum alfabeto
@@ -533,11 +533,227 @@ Capítulo 3:
 
   - Operações em Linguagens
   Existem várias operações importantes que podem ser aplicadas às linguagens.
-  Para a análise léxica, estaremos primeiramente interesados na união,
+  Para a análise léxica, estaremos primeiramente interessados na união,
   concatenação e fechamento. Podemos também generalizar o operador de
   "exponenciação" para linguagens, definindo-se L^0 sendo {E} e L^i como
   L^i-1*L. Desa forma L^i é L concatenado consigo mesma i-1 vezes.
 
   - Expressões Regulares
   Nesta seção, apresentamos uma notação, chamada de expressões regulares, que
-  nos permite definir precisamente conjuntos de diversas naturezas.
+  nos permite definir precisamente conjuntos de diversas naturezas. Uma
+  expressão regular é constituída de expressões regulares mais simples usando-se
+  um conjunto de regras de definição. Cada expressão regular r denota uma
+  linguagem L(r). As regras de definição especificam como L(r) é formada através
+  da combinação, em várias formas, das linguagens denotas pelas subexpressões de
+  r.
+
+  - Definições Regulares
+  Por uma conveniência de notação, podemos deseja dar nomes a expressões
+  regulares, bem como definir outras, usando esses nomes como se fossem
+  símbolos.
+
+  - Simplificações Notacionais
+  Algumas construções ocorrem tão frequentemente nas expressões regulares que é
+  conveniente introduzir algumas simplificações notacionais para as mesmas.
+  1. Uma ou mais ocorrências. O operador unário pós-fixo * significa "uma ou
+  mais ocorrências de".
+  2. Zero ou mais ocorrências. O operador pós-fixo unário ? significa "zero ou
+  uma ocorrência de".
+  3. Classes de caracteres. A notação [abc], onde a, b e c são símbolos de
+  alfabeto, denota a expressão regular a | b | c. Uma classe de caracteres
+  abreviada, tal como [a-z] denota a expressão regular a | b | ... | z.
+
+  - Conjuntos Não-regulares
+  Algumas linguagens não podem ser descritas por qualquer expressão regular.
+
+Capítulo 4:
+  Cada linguagem de programação possui as regras que descrevem a estrutura
+  sintática dos programas bem-formados. A sintaxe das construções de uma
+  linguagem de programação pode ser descrita pelas gramáticas livres de contexto
+  ou pela notação BNF (Forma de Backus-Naur).
+  - Uma gramática oferece, para uma linguagem de programação, uma especificação
+  sintática precisa e fácil de entender.
+  - Para certas classes de gramáticas, podemos construir automaticamente um
+  analisador sintático que determine se um programa-fonte está sintaticamente
+  bem-formado.
+  - Uma gramática propriamente projetada implica uma estrutura de linguagem de
+  programação útil à tradução correta de programas-fonte em códigos-objeto e
+  também à detecção de erros.
+  - As linguagens evoluíram ao longo de um certo período de tempo, adquirindo
+  novas construções e realizando tarefas adicionais.
+
+  O núcleo deste capítulo está devotado aos métodos de análise sintática que são
+  tipicamente usados nos compiladores.
+
+  4.1 O Papel do Analisador Sintático
+  Em nosso modelo de compilador, o analisador sintático obtém uma cadeia de
+  tokens proveniente do analisador léxico e verifica se a mesma pode ser gerada
+  pela gramática da linguagem-fonte. Esperamos que o analisador sintático relate
+  quaisquer erros de sintaxe de uma forma inteligível. Deve também se recuperar
+  dos erros que ocorram mais comumente, a fim de poder continuar processando
+  o resto de sua entrada.
+  Existem três tipos gerais de analisadores sintátidos. Os métodos universais de
+  análise sintática, tais como o algoritmo de Cocke-Younger-Kasami e o de
+  Earley, podem tratar qualquer gramática. Esses métodos, entretanto, são muito
+  ineficientes para se usar num compilador de produção. Os métodos mais
+  comumente usados nos compiladores são classificados como top-down ou
+  bottom-up. Como indicado por seus nomes, os analisadores top-down constroem
+  árvores do topo (raiz) para o fundo (folhas), enquanto os bottom-up começam
+  pelas folhas e trabalham árvore acima até a raiz. Em ambos os casos, a entrada
+  é varrida da esquerda para direita, um símbolo de cada vez.
+
+  - Tratamento dos Erros de Sintaxe
+  Sabemos que os programas podem conter erros em muitos níveis diferentes. Por
+  exemplo, os erros podem ser:
+    - léxicos, tais como errar a grafia de um identificador, palavra-chave ou
+    operador
+    - sintáticos, tais como uma expressão aritmética com parênteses
+    não-balanceados
+    - semânticos, tais como um operador aplicado a um operando incompatível
+    - lógicos, tais como uma chamada infinitamente recursiva.
+  Frequentemente, boa parte da detecção e recuperação de erros num compilador
+  gira em torno da fase de análise sintática. Isto porque os erros ou são
+  sintáticos por natureza ou são expostos quando o fluxo de tokens proveniente
+  do analisador léxico desobedece às regras gramaticais que definem a linguagem
+  de programação.
+  O tratador de erros num analisador sintático possui metas simples de serem
+  estabelecidas:
+    - Deve relatar a presença de erros clara e acuradamente.
+    - Deve se recuperar de cada erro suficientemente rápido a fim de ser capaz
+    de detectar erros subsequentes.
+    - Não deve retardar significativamente o processamento de programas
+    corretos.
+  A realização efetiva dessas metas apresenta desafios difíceis.
+  Felizmente, os erros comuns são simples e frequentemente basta um mecanismo de
+  tratamento de erros relativamente direto. Em alguns casos, entretanto, um erro
+  pode ter ocorrido muito antes de sua presença ter sido detectada e sua
+  natureza precisa pode ser muito difícil de ser deduzida.
+
+  - Estratégias de Recperação de Erros
+  Existem muitas estratégias gerais diferentes que um analisador sintático pode
+  empregar para se recuperar de um erro sintático. Apesar de nenhuma delas ter
+  provado ser universalmente aceitável, uns poucos métods têm ampla
+  aplicabilidade. Introduzimos aqui as seguintes estratégias:
+    - modalidade do desespero: este é o método mais simples de implementar. Ao
+    descobrir um erro, o analisador sintático descarta símbolos de entrada, um
+    de cada vez, até que seja encontrado um token pertencente a um conjunto
+    designado de tokens de sincronização.
+    - nível de frase: ao descobrir um erro, o analisador sintático pode realizar
+    uma correção local na entrada restante. Isto é, pode substituir um prefixo
+    de entrada remanescente por alguma cadeia que permita ao analisador seguir
+    em frente.
+    - produções de erro: se uma produção de erro for usada pelo analisador,
+    podemos gerar diagnósticos apropriados para indicar a construção ilegal que
+    foi reconhecida na entrada.
+    - correção global: algortimos para escolhar uma sequencia mínima de mudanças
+    de forma a se obter uma correção global de menor custo.
+
+  4.2 Gramáticas Livres de Contexto
+  Muitas construções de linguagens de programação possuem uma estrutura
+  inerentemente recursiva que pode ser identificada por gramáticas livres de
+  contexto. Uma gramática livre de contexto (gramática, simplificadamente)
+  consiste em terminais, não-terminais, um símbolo de partida e produções.
+  1. Os terminais são símbolos básicos a partir dos quais as cadeias são
+  formadas. A palavra "token" será um sinônimo de "terminal" ao falarmos a
+  respeito de gramáticas para linguagens de programação. Cada palavra-chave
+  if, then e else é um terminal.
+  2. Os não-terminais são variáveis sintáticas que denotam cadeias de
+  caracteres. cmd e expr são não terminais. Os não-terminais definem conjuntos
+  de cadeias que auxiliam a definição da linguagem gerada pela gramática.
+  3. Numa gramática, um não-terminal é distinguido como o símbolo de partida, e
+  o conjunto de cadeias que o mesmo denota é a linguagem definida pela
+  gramática.
+  4. As produções de uma gramática especificam a forma pela qual os terminais e
+  não-terminais podem ser combinados a fim de formar cadeias. Cada produção
+  consiste em um não-terminal, seguido por uma seta, seguido por uma cadeia de
+  não-terminais e terminais.
+
+  - Derivações
+  Existem várias formas de se enxergar o processo pelo qual uma gramática define
+  uma linguagem. A visão derivacional fornece uma precisa descrição da
+  construção top-down da árvore gramatical. A ideia central aqui é que uma
+  produção seja tratada como uma regra de reescrita, na qual o não-terminal à
+  esquerda é substituído pela cadeia no lado direito da produção.
+
+  - Árvores Gramaticais e Derivações
+  Uma árvore gramatical pode ser vista como uma representação gŕafica para uma
+  derivação que filtre a escolha relacionada à ordem de substituição. Cada nó
+  interior de uma árvore gramatical é rotulado por algum não-terminal A e que os
+  folhos de um nó são rotulados, da esquerda para a direita, pelos símbolos do
+  lado direito da produção pelos quais A foi substituído na derivação. As folhas
+  da árvore gramatical são rotuladas por não-terminais ou terminais e, lidos da
+  esquerda para direita, constituem uma forma sentencial chamada de produto ou
+  fronteira da árvore.
+
+  - Ambiguidade
+  Uma gramática que produza mais de uma árvore gramatical para alguma setença
+  é dita ambígua. Colocado de outra forma, uma gramática ambígua é aquela que
+  produz mais de uma derivação à esquerda, ou à direita para a mesma sentença.
+  Para certos tipos de analisadores sintáticos, é desejável que a gramática seja
+  inambígua, porque se não o for, não poderemos selecionar, de forma única, a
+  árvore gramatical para uma dada sentança.
+
+  4.3 Escrevendo Uma Gramática
+  As gramáticas são capazes de descrever a maioria, mas não a totalidade das
+  sintaxes das linguagens de programação. Uma parte limitada da análise
+  sintática é realizada pelo analisador léxico, na medida em que produz uma
+  sequência de tokens a partir dos caracteres de entrada. Certas restrições
+  feitas à entrada, tais como a exigência de que os identificadores sejam
+  declarados antes de serem usados, não podem ser descritas por uma gramática
+  livre de contexto. Consequentemente, as sequencias de tokens aceitas por um
+  analisador sintático forma um subconjunto de uma linguagem de programação.
+
+  - Expressões Regulares vs. Gramáticas Livres de Contexto
+  Cada construção que possa ser descrita por uma expressão regular também pode
+  ser descrita por uma gramática. Uma vez que cada expressão regular é uma
+  linguagem livre de contexto, podemos indagar "por que usar expressões
+  regulares para definir a estrutura léxica da linguagem"? Existem várias
+  razões:
+  1. As regras léxicas de uma linguagem são frequentemente simples e para
+  descrevê-las não precisamos de uma notação tão poderosa quanto a das
+  gramáticas.
+  2. As expressões regulares geralmente providenciam, para os tokens da
+  gramática, uma notação mais concisa e facilmente compreendida.
+  3. A partir de expressões regulares, podem ser construídos automaticamente
+  analisadores léxicos mais eficientes do que a partir de gramáticas
+  arbitrárias.
+  4. A separação da estrutura sintática da linguagem nas partes léxica e
+  não-léxica providencia uma forma conveniente de modularizar a vanguarda de um
+  compilador em componentes administravelmente dimensionados.
+
+  - Verificando a Linguagem Gerada por uma Gramática
+  Apesar de os projetistas de compiladores raramente o fazerem para uma
+  gramática de uma linguagem de programação completa, é importante estarmos
+  capacitados a sustentar que um dado conjunto de produções gere uma linguagem
+  particular. As construções problemáticas podem ser estudadas escrevendo-se
+  uma gramática abstrata concisa e em seguida analisando-se a linguagem que a
+  mesma gera. Uma prova de que uma gramática G gera uma linguagem L possui
+  duas partes: precisamos mostrar que cada cadeia gerada por G está em L e,
+  reciprocamente, que cada cadeia em L pode ser gerada por G.
+
+  4.4 Análise Sintática Top-Down
+  Definimos a classe de gramáticas LL a partir da qual os analisadores 
+  preditivos podem ser construídos automaticamente.
+
+  - Análise Sinática de Descendência Recursiva
+  A análise sintática top-down pode ser vista como uma tentativa de se encontrar
+  uma derivação mais à esquerda para uma cadeia de entrada. Equivalentemente,
+  pode ser vista como uma tentativa de se construir uma árvore gramatical, para
+  a cadeia de entrada, a partir da raiz, criando os nós da árvore gramatical em
+  pré-ordem. Consideramos agora uma forma geral de análise sintática top-down,
+  chamada de descendência recursiva, que pode envolver retrocesso, ou seja, a
+  realização de esquadrinhamentos repeditos da entrada.
+
+  - Analisadores Sintáticos Preditivos
+  Em muitos, casos, escrevendo-se cuidadosamente uma gramática, eliminando-se a
+  recursão à esquerda e fatorando-se à esquerda a gramática resultante, podemos
+  obter uma nova gramática processálve por um analisador sintático de
+  descendência recursiva que não necessite de retrocesso, isto é, um analisador
+  sintático preditivo. Para construir um analisador sintátito preditivo,
+  precisamos conhecer, dado o símbolo correte de entrar a e o não-terminal A a
+  ser expandido, qual das alternativas da produção A -> a1 | a2 | ... | an é a
+  única que deriva uma cadeia começando por a. Ou seja, a alternativa adequada
+  precisa ser detectável examinando-se apenas para o primeiro símbolo da cadeia
+  que a mesma deriva. As construções de controle de fluxo na maioria das
+  linguagens de programação, com suas palavras-chave distintivas, são usualmente
+  detectáveis dessa forma.
