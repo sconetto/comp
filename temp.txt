@@ -1,0 +1,65 @@
+    # Lexer
+  tokens_list = [
+    'NUMBER',
+    'STRINGS',
+    'BOOLEAN',
+    'ATRIB_OP',
+    'SIMPLE_OP',
+    'MUL_OP',
+    'BREAKLINE',
+    'INDENT',
+    'COND_IF',
+    'COND_ELIF',
+    'COND_ELSE',
+    'LOOP_FOR',
+    'LOOP_WHILE',
+    'COLON',
+    'BO_EQUAL',
+    'BO_BIGGER',
+    'BO_BIGGER_EQUAL',
+    'BO_LOWER',
+    'BO_LOWER_EQUAL',
+    'LO_NOT',
+    'LO_AND',
+    'LO_OR',
+    'VARIABLE',
+    'RW_IN',
+    'RW_IS',
+    'RW_RANGE',
+  ]
+
+
+  # List and Dictionary : To Map Sidekick - Backlog
+  def js_lexer():
+        lexer = ox.make_lexer([
+            ('NUMBER', r'[+-]?\d+(?:\.\d+)'),
+            ('STRING', r'^([\'|\"]{1})+(?:(\w+|\W+|\d+|\D+|\s+|\S+|))+([\'|\"]{1})$'),
+            ('BOOLEAN', r'(\ATrue)|(\AFalse)'),
+            ('ATRIB_OP', r'[\={1}]'),
+            ('SIMPLE_OP', r'[-+]'),
+            ('MUL_OP', r'[*/]'),
+            ('BREAKLINE', r'[\n\r]'), #
+            ('INDENT', r'[\t]'), #
+            ('COND_IF', r'^\s*if') #,
+            ('COND_ELIF', r'^\s*elif'), #
+            ('COND_ELSE', r'^\s*else'), #
+            ('LOOP_FOR', r'^\s*for'),
+            ('LOOP_WHILE', r'^\s*while'),
+            ('COLON', r':$'),
+            ('BO_EQUAL', r'=='),
+            ('BO_BIGGER', r'>'),
+            ('BO_BIGGER_EQUAL', r'>='),
+            ('BO_LOWER', r'<'),
+            ('BO_LOWER_EQUAL', r'<='),
+            ('LO_NOT', r'(not)'),
+            ('LO_AND', r'(and)'),
+            ('LO_OR', r'(or)'),
+            ('VARIABLE', r'([a-zA-Z]|_)\w+'),
+            ('RW_IN', r'(in)'),
+            ('RW_IS', r'(is)'),
+            ('RW_RANGE', r'(range)')
+        ])
+
+        return lexer
+
+
